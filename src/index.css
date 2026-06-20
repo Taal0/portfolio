@@ -1,0 +1,373 @@
+@import "tailwindcss";
+@import "@fontsource/geist-mono/400.css";
+@import "@fontsource/geist-mono/500.css";
+@import "@fontsource/geist-mono/600.css";
+
+@theme {
+  --color-bg: #0d0f12;
+  --color-surface: #111827;
+  --color-border: #1f2937;
+  --color-text: #f5f5f5;
+  --color-muted: #94a3b8;
+  --color-accent: #10b981;
+  --color-accent-secondary: #34d399;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+
+  --crt-phosphor-glow: rgba(16, 185, 129, 0.35);
+  --crt-phosphor-soft: rgba(16, 185, 129, 0.15);
+  --crt-bezel: #1f2937;
+  --crt-bezel-dark: #111827;
+  --crt-bezel-light: #374151;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: var(--font-mono);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  #root {
+    min-height: 100dvh;
+  }
+
+  a {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  a:hover {
+    color: var(--color-accent-secondary);
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-accent) 30%, transparent);
+    color: var(--color-text);
+  }
+}
+
+/* ─── CRT monitor shell ─── */
+
+.crt-room {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(16, 185, 129, 0.04) 0%, transparent 70%),
+    var(--color-bg);
+}
+
+.crt-monitor {
+  image-rendering: pixelated;
+}
+
+.crt-bezel {
+  position: relative;
+  padding: 14px 16px 12px;
+  background: var(--crt-bezel-dark);
+  border: 3px solid var(--crt-bezel);
+  border-radius: var(--radius-sm);
+  box-shadow:
+    /* pixel-step outer edge */
+    0 0 0 1px #0a0c0f,
+    0 0 0 4px var(--crt-bezel-dark),
+    0 0 0 5px var(--crt-bezel-light),
+    /* depth */
+    0 24px 48px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.crt-bezel-brand {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 0 4px;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.crt-brand-text {
+  color: var(--color-accent);
+  text-shadow: 0 0 8px var(--crt-phosphor-soft);
+}
+
+.crt-brand-model {
+  opacity: 0.5;
+}
+
+.crt-screen-outer {
+  padding: 6px;
+  background: #0a0c0f;
+  border: 2px solid #0f1218;
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.8);
+}
+
+.crt-screen {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1px;
+  background: var(--color-bg);
+  box-shadow:
+    inset 0 0 60px rgba(0, 0, 0, 0.6),
+    inset 0 0 2px rgba(16, 185, 129, 0.06);
+}
+
+.crt-screen-content {
+  position: relative;
+  z-index: 1;
+  min-height: min(72dvh, 720px);
+}
+
+.crt-bezel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 0 4px;
+}
+
+.crt-vents {
+  display: flex;
+  gap: 6px;
+}
+
+.crt-vent-slot {
+  display: block;
+  width: 28px;
+  height: 4px;
+  background: #0a0c0f;
+  border-radius: 1px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.crt-power-led {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 1px;
+  background: var(--color-accent);
+  box-shadow: 0 0 6px var(--color-accent);
+}
+
+.crt-power-glow {
+  position: absolute;
+  inset: -3px;
+  border-radius: 2px;
+  background: var(--crt-phosphor-glow);
+  opacity: 0.5;
+  animation: power-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes power-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.3);
+  }
+}
+
+/* Glass curvature + edge darkening */
+.crt-glass-curve {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+  border-radius: 1px;
+  background: radial-gradient(
+    ellipse 95% 90% at 50% 48%,
+    transparent 55%,
+    rgba(0, 0, 0, 0.25) 100%
+  );
+}
+
+.crt-vignette {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 11;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 50%,
+    rgba(0, 0, 0, 0.45) 100%
+  );
+}
+
+/* Scanlines — scoped to screen */
+.crt-scanlines {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.12) 2px,
+    rgba(0, 0, 0, 0.12) 4px
+  );
+  animation: scanline-drift 8s linear infinite;
+}
+
+@keyframes scanline-drift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 4px;
+  }
+}
+
+/* Film grain */
+.crt-noise {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+}
+
+/* Subtle screen flicker */
+@keyframes crt-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.98;
+  }
+  52% {
+    opacity: 1;
+  }
+  54% {
+    opacity: 0.99;
+  }
+}
+
+.crt-flicker {
+  animation: crt-flicker 4s infinite;
+}
+
+/* Phosphor glow utilities */
+.phosphor-text {
+  text-shadow:
+    0 0 8px var(--crt-phosphor-glow),
+    0 0 16px var(--crt-phosphor-soft);
+}
+
+.phosphor-border {
+  box-shadow:
+    0 0 10px var(--crt-phosphor-soft),
+    inset 0 0 8px rgba(16, 185, 129, 0.05);
+}
+
+/* Boot cursor blink */
+@keyframes cursor-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.crt-cursor {
+  animation: cursor-blink 1s step-end infinite;
+}
+
+.crt-boot {
+  background: var(--color-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crt-flicker,
+  .crt-scanlines,
+  .crt-power-glow,
+  .crt-cursor {
+    animation: none;
+  }
+}
+
+/* Prose styles for markdown */
+.prose-crt {
+  line-height: 1.7;
+  color: var(--color-text);
+}
+
+.prose-crt h1,
+.prose-crt h2,
+.prose-crt h3 {
+  color: var(--color-accent);
+  font-weight: 600;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose-crt h1 {
+  font-size: 1.5rem;
+}
+
+.prose-crt h2 {
+  font-size: 1.25rem;
+}
+
+.prose-crt h3 {
+  font-size: 1.1rem;
+}
+
+.prose-crt p {
+  margin-bottom: 1em;
+}
+
+.prose-crt ul,
+.prose-crt ol {
+  margin-bottom: 1em;
+  padding-left: 1.5em;
+}
+
+.prose-crt li {
+  margin-bottom: 0.25em;
+}
+
+.prose-crt strong {
+  color: var(--color-accent-secondary);
+}
+
+.prose-crt code {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.1em 0.35em;
+  font-size: 0.9em;
+}
+
+.prose-crt a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
